@@ -41,35 +41,30 @@
 							$email = $_POST['email-subscribe'];			
 							$query = "INSERT INTO newsletter(email) VALUES ('$email')"; //insert email into database
 							
-							//retrieve email and sent a letter through user email
-							if(mysqli_query($db,$query)){								
-								$query1 = "SELECT email FROM newsletter	ORDER BY id desc LIMIT 1";
-								$result = mysqli_query($db,$query1);
-								if(mysqli_num_rows($result)>0){
-									while($row = mysqli_fetch_assoc($result)){
-										if ($email==$row['email']){
-											array_push($error,"Error: You have already subscribe our newsletter.");
-										}		
-										else{
-											$emailSend = $row['email'];
-											
-											//send email through Google Gmail
-											$to_email = "$emailSend";
-											$subject = "Appreciate Mail from La Florist";
-											$body = "Thank you for subscribe La Florist! \nHave a nice day! \nStay tuned for more updates!";
-											$headers = "From: example.lu123@gmail.com";
-											
-											//display when is successful	
-											if (mail($to_email, $subject, $body, $headers)) {
-												array_push($notice,"Thank for subscribe us!");
-											}
-										}
-									}										
-								}						
-							}
+							$query1 = "SELECT email FROM newsletter	WHERE (email='$email') LIMIT 1";
+							
+							$res = mysqli_query($db,$query1);
+							
+							if(mysqli_num_rows($res)){
+								$row = mysqli_fetch_assoc($res);
+								
+								if($email == $row['email']){
+									array_push($error,"Error: You have already subscribe our newsletter.");
+								}								
+							}		
 							else{
-								array_push($error,"Ops! Please type again!");								
-							}
+								if(mysqli_query($db,$query)){
+									$to_email = "$email";
+									$subject = "Appreciate Mail from La Florist";
+									$body = "Thank you for subscribe La Florist! \nHave a nice day! \nStay tuned for more updates!";
+									$headers = "From: example.lu123@gmail.com";
+											
+									//display when is successful	
+									if (mail($to_email, $subject, $body, $headers)) {
+										array_push($notice,"Thank for subscribe us!");
+									}
+								}
+							}	
 						}
 						mysqli_close($db);
 					?>
