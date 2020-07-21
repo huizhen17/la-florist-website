@@ -98,9 +98,12 @@
 										<p>
 											<?php 
 												$summary = $row['summary']; 
-												$word = substr($summary,0,150); 
-												$displaySummary = $word."[...]"; //display only first 150 characters
-												echo $displaySummary
+												
+												if(strlen($summary)>150){
+													$word = substr($summary,0,150); 
+													$summary = $word."[...]"; //display only first 150 characters
+												}												
+												echo $summary;
 											?>
 										</p>
 									</div>
